@@ -1,0 +1,9 @@
+{
+  "name": "Mau_ScoringPopUps"
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/MauerLFR/CodScoring",
+  "description": "Adds kill pop-ups from Call of Duty on kill. Headhshot, longhsot etc",
+  "dependencies": [
+    "S2Mods-ClientKillCallback-2.0.0"
+  ]
+}
