@@ -185,10 +185,8 @@ void function OnDamage(entity player, entity victim, vector Pos, int damageType)
 				AiMultikill++
 				AddStyleEvent( "kill ×" + AiMultikill, Rareity[0]) // Ai kills	
 			if(AiMultikill > 3){
+			AiMultikill++
 				AddStyleEvent( "Farmer", Rareity[2]) // Ai kills
-				
-				
-				AiMultikill = 0
 			}
 		}
 		if(damageType & DF_HEADSHOT){
@@ -278,7 +276,7 @@ void function UpdateRankUI(){
 		RuiSetFloat3(StyleEventSlot5, "msgColor", SlotCols[4])
 		RuiSetString(StyleEventSlot5, "msgText", SlotStrings[4])
 		
-		if((TimeNow - TimeSinceLast) > 4){
+		if((TimeNow - TimeSinceLast) > 5){
 			Multikill = 0
 			AiMultikill = 0
 		}
