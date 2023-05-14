@@ -1,5 +1,5 @@
 global function ScoringInit
-global function AddStyleEvent
+global function AddPopEvent
 
 
 var StyleEventSlot1 = null
@@ -78,14 +78,14 @@ void function KillEvent( ObituaryCallbackParams KillEventPerams ){
 		TimeSinceLast = Time()
 		StyleStreak++
 	//if(KillEventPerams.attacker == GetLocalClientPlayer()){	//Check damageSourceId
-		//AddStyleEvent("Kill ID: " + KillEventPerams.damageSourceId, Rareity[1])}
+		//AddPopEvent("Kill ID: " + KillEventPerams.damageSourceId, Rareity[1])}
 		if(KillEventPerams.victim == GetLocalClientPlayer()){
-			AddStyleEvent("", Rareity[2]) //Suicides
+			AddPopEvent("", Rareity[2]) //Suicides
 		}
 		if(KillEventPerams.victim.IsTitan() && KillEventPerams.victimIsOwnedTitan){
-			AddStyleEvent( "titan kill", Rareity[1] ) // Titan kill (duh)
+			AddPopEvent( "titan kill", Rareity[1] ) // Titan kill (duh)
 			if (KillEventPerams.damageSourceId == 185){
-				AddStyleEvent( "Scrapped", Rareity[2] ) //Titan execution
+				AddPopEvent( "Scrapped", Rareity[2] ) //Titan execution
 			}
 		}
 		if(KillEventPerams.victim.IsPlayer() && !KillEventPerams.victimIsOwnedTitan){
@@ -94,75 +94,75 @@ void function KillEvent( ObituaryCallbackParams KillEventPerams ){
 			switch(Multikill){
 				case 1:
 
-					AddStyleEvent("Pilot Kill", Rareity[1] ) // Pilot kills
+					AddPopEvent("Pilot Kill", Rareity[1] ) // Pilot kills
 					break
 				case 2:
-					AddStyleEvent( "double down", Rareity[1] ) // Double kill
+					AddPopEvent( "double down", Rareity[1] ) // Double kill
 					break
 				case 3:
-					AddStyleEvent( "triple threat", Rareity[2] ) // Triple kill
+					AddPopEvent( "triple threat", Rareity[2] ) // Triple kill
 					break
 				case 4:
-					AddStyleEvent( "quad kill", Rareity[2] ) // Quad kill
+					AddPopEvent( "quad kill", Rareity[2] ) // Quad kill
 					break
 			}
 			 if (Multikill > 4){
-				AddStyleEvent( "carnage ×" + Multikill, Rareity[3] ) // Multikills 
+				AddPopEvent( "carnage ×" + Multikill, Rareity[3] ) // Multikills 
 			}
 			switch(StyleStreak){
 				case 3:
-					AddStyleEvent( "killing spree", Rareity[1] ) //Killstreaks 3, 5 and 10
+					AddPopEvent( "killing spree", Rareity[1] ) //Killstreaks 3, 5 and 10
 					break
 				case 5:
-					AddStyleEvent( "rampage", Rareity[2] )	
+					AddPopEvent( "rampage", Rareity[2] )	
 					break
 				case 10:
-					AddStyleEvent( "unstoppable", Rareity[3] )				
+					AddPopEvent( "unstoppable", Rareity[3] )				
 					break
 			}
 			if (mDistance >= 33.00 && KillEventPerams.damageSourceId != 107 && KillEventPerams.damageSourceId != 85){
-				AddStyleEvent( "longshot " + format("%.2f", mDistance) + " m", Rareity[2] ) //longshots without nades, smokes etc
+				AddPopEvent( "longshot " + format("%.2f", mDistance) + " m", Rareity[2] ) //longshots without nades, smokes etc
 			}
 			if (mDistance <= 3.00 && KillEventPerams.damageSourceId != 151 && KillEventPerams.damageSourceId != 140 && KillEventPerams.damageSourceId != 186 && KillEventPerams.damageSourceId != 185){
-				AddStyleEvent( "point blank", Rareity[2] ) //point blank without melees etc
+				AddPopEvent( "point blank", Rareity[2] ) //point blank without melees etc
 			}
 			switch(KillEventPerams.damageSourceId){
 				case 110: case 75: case 237: case 40: case 57: case 81:
-					AddStyleEvent( "crispy", Rareity[0] )	// Scorch stuff + Firestar
+					AddPopEvent( "crispy", Rareity[0] )	// Scorch stuff + Firestar
 					break										
 				case 126: case 135: case 119:				
-					AddStyleEvent( "obliterated", Rareity[1] )	// Cold war, EPG, Charge rifle
+					AddPopEvent( "obliterated", Rareity[1] )	// Cold war, EPG, Charge rifle
 					break
 				case 140:
-					AddStyleEvent( "nosebreaker", Rareity[1] ) // Pilot melee
+					AddPopEvent( "nosebreaker", Rareity[1] ) // Pilot melee
 					break
 				case 186:
-					AddStyleEvent( "finisher", Rareity[2] ) //Pilot execution
+					AddPopEvent( "finisher", Rareity[2] ) //Pilot execution
 					break
 				case 45:
-					AddStyleEvent( "railed", Rareity[1] ) // Railgun
+					AddPopEvent( "railed", Rareity[1] ) // Railgun
 					break
 				case 111:
-					AddStyleEvent( "surgical", Rareity[2]) //Pulse blade
+					AddPopEvent( "surgical", Rareity[2]) //Pulse blade
 					break
 				case 85:
-					AddStyleEvent( "smoker", Rareity[1]) //Electric smoke nades
+					AddPopEvent( "smoker", Rareity[1]) //Electric smoke nades
 					break
 				case 107:
-					AddStyleEvent( "fragger", Rareity[1]) //Grenades
+					AddPopEvent( "fragger", Rareity[1]) //Grenades
 					break
 				case 151:
-					AddStyleEvent( "by the sword", Rareity[1] ) //Ronin melee
+					AddPopEvent( "by the sword", Rareity[1] ) //Ronin melee
 					break
 				case 44:
-					AddStyleEvent( "nuke", Rareity[2] )//Nuclear eject
+					AddPopEvent( "nuke", Rareity[2] )//Nuclear eject
 					break
 				}
 			if(KillEventPerams.victim.IsTitan() && !player.IsTitan()){
-				AddStyleEvent( "Bunkerbuster", Rareity[3] ) //Titan kill as pilot
+				AddPopEvent( "Bunkerbuster", Rareity[3] ) //Titan kill as pilot
 			}
 			if(!IsAlive(GetLocalClientPlayer())){
-				AddStyleEvent( "postmortal", Rareity[3] ) //kills when player is dead
+				AddPopEvent( "postmortal", Rareity[3] ) //kills when player is dead
 				}
 		}
 	}	
@@ -179,21 +179,21 @@ void function OnDamage(entity player, entity victim, vector Pos, int damageType)
 		SlotStrings[4] = ("")
 		if(!victim.IsPlayer() && AiMultikill < 1 ){
 				AiMultikill++
-				AddStyleEvent( "kill", Rareity[0])			// Ai kills
+				AddPopEvent( "kill", Rareity[0])			// Ai kills
 		}
 		else if(!victim.IsPlayer()){
 				AiMultikill++
-				AddStyleEvent( "kill ×" + AiMultikill, Rareity[0]) // Ai kills	
+				AddPopEvent( "kill ×" + AiMultikill, Rareity[0]) // Ai kills	
 			if(AiMultikill > 3){
 			AiMultikill++
-				AddStyleEvent( "Farmer", Rareity[2]) // Ai kills
+				AddPopEvent( "Farmer", Rareity[2]) // Ai kills
 			}
 		}
 		if(damageType & DF_HEADSHOT){
-			AddStyleEvent( "Headshot", Rareity[1]) // headshots
+			AddPopEvent( "Headshot", Rareity[1]) // headshots
 		}
 		if(damageType & DF_CRITICAL){
-			AddStyleEvent( "Critical", Rareity[1]) // crits on titans
+			AddPopEvent( "Critical", Rareity[1]) // crits on titans
 		}
 	}
 
@@ -201,7 +201,7 @@ void function OnDamage(entity player, entity victim, vector Pos, int damageType)
 
 
 
-void function AddStyleEvent( string name, vector rarity ){
+void function AddPopEvent( string name, vector rarity ){
 	if (Slot1Full == false){
 		SlotStrings[4] = (name + "!")
 		SlotCols[4] = rarity
@@ -410,35 +410,35 @@ void function AddStyleFromSpeed(){ //Adds style points based on speed
 			movementChain = 0
 		}
 		else if(avgSpeed < 48){
-			AddStyleEvent( "speed", Rareity[1])
+			AddPopEvent( "speed", Rareity[1])
 			movementChain++
 		}
 		else if(avgSpeed < 60){
 			
-			AddStyleEvent( "speed lv.2", Rareity[1])
+			AddPopEvent( "speed lv.2", Rareity[1])
 			movementChain++
 		}
 		else if(avgSpeed < 72){
 			
-		AddStyleEvent( "speed lv.3", Rareity[1])
+		AddPopEvent( "speed lv.3", Rareity[1])
 			movementChain++
 		}
 		else{
-			AddStyleEvent( "speed demon", Rareity[1])
+			AddPopEvent( "speed demon", Rareity[1])
 			movementChain++
 		}
 
 		//Same here, movement:
 		switch(movementChain){
 			case 3:		
-				AddStyleEvent( "movement", Rareity[1])
+				AddPopEvent( "movement", Rareity[1])
 				break
 			case 6:	
-				AddStyleEvent( "parkour", Rareity[1])
+				AddPopEvent( "parkour", Rareity[1])
 				break
 			default:
 				if(movementChain % 3 == 0 && movementChain >= 9)
-				AddStyleEvent( "movement god", Rareity[1])
+				AddPopEvent( "movement god", Rareity[1])
 				break
 		}}
 
@@ -451,7 +451,7 @@ void function AddStyleFromAirTime(){ //Air time bonus
 	entity p = GetLocalClientPlayer()
 	if(!p.IsOnGround() && !IsSpectating()){ //there should be some sort of check to see if player is in control
 		if(Time() - LastTimeTouchingGround > TimeToBeat){
-			AddStyleEvent( "alley-oop", Rareity[1])
+			AddPopEvent( "alley-oop", Rareity[1])
 			TimeToBeat += 3
 		}
 	}

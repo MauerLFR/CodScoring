@@ -3,7 +3,7 @@
 	"Description": "Based on LavaLump's StyleMeter. Adds kill pop-ups from Call of Duty on kill. Headhshot, longhsot etc",
 	"LoadPriority": 2,
 	"RequiredOnClient": false,
-	"Version": "1.0.0",
+	"Version": "1.0.2",
 
 	"Scripts": [
 		{
