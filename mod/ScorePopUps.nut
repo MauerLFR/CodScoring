@@ -30,18 +30,21 @@ void function ScoringInit()
 	
 	/*
 	Mauer's TO DO:
-	-Resolve color conflicts 
-	-Add EJECT kill popup, EJECTN'T!/SKEET SHOOTER!
-	-Add REVENGE kill popup, REVENGE!
+	-[DONE] Add REVENGE kill popup
+	-[DONE] Resolve color conflicts 
+	-[DONE] Noscopes  
+	-[DONE] Add CORE kill popup
+	-Add DOMINATION popup
+	-Add EJECT kill popup
+	-Add KINGSLAYER kill popup
 	-Add Kills while going fast / big airtime (with measures!) DRIVE-BY [velocity] KMPH! / ALLEY-OOP [airtime] S!
-	-Noscopes
 	-colateralls
 	*/
 	
 array < string > SlotStrings = ["", "", "", "", ""]
 array < vector > SlotCols = [<0.5, 0.5, 0.5>, <0.5, 0.5, 0.5>, <0.5, 0.5, 0.5>, <0.5, 0.5, 0.5>, <0.5, 0.5, 0.5>]
 
-int StyleStreak = 0
+int Killstreak = 0
 int HeadshotStreak = 0
 int Multikill = 0
 int AiMultikill = 0
@@ -57,121 +60,144 @@ vector StylePos1 = < 0.8, 0.2, 0>
 vector StylePos2 = <0.92, 0.23, 0>
 float hDistance = 0.0
 float mDistance = 0.0
+float zoomFrac = 0.0
+string nemesis = ""
 
 
-array < vector > Rareity = [<0.5, 0.5, 0.5>, <0.9, 0.9, 0.9>, <0.7, 0.5, 0.0>, <1.0, 0.50, 0.0>]
+
+array < vector > Rareity = [<0.5, 0.5, 0.5>, <0.9, 0.9, 0.9>, <0.99, 0.5, 0.0>, <0.99, 0.05, 0.05>]
 
 
 
 void function KillEvent( ObituaryCallbackParams KillEventPerams ){
 	entity player = GetLocalClientPlayer()
-		if(KillEventPerams.victim == GetLocalClientPlayer()){ 
+	zoomFrac = player.GetZoomFrac()
+	if(KillEventPerams.victim == GetLocalClientPlayer()){
+		nemesis = KillEventPerams.attacker.GetPlayerName()
 		SlotStrings[0] = ("")	//
 		SlotStrings[1] = ("")	//
 		SlotStrings[2] = ("")	//
 		SlotStrings[3] = ("")	//
 		SlotStrings[4] = ("")	// Clear pop-ups in case of death, but still allow for "postmortal"
 	}
-	if(KillEventPerams.attacker == GetLocalClientPlayer()){
+	if(KillEventPerams.attacker == player){
 		hDistance = Distance(player.EyePosition(), KillEventPerams.victim.GetOrigin())
 		mDistance = hDistance * 0.07616/3
 		TimeSinceLast = Time()
-		StyleStreak++
+		Killstreak++
 	//if(KillEventPerams.attacker == GetLocalClientPlayer()){	//Check damageSourceId
 		//AddPopEvent("Kill ID: " + KillEventPerams.damageSourceId, Rareity[1])}
-		if(KillEventPerams.victim == GetLocalClientPlayer()){
-			AddPopEvent("", Rareity[2]) //Suicides
+	if(KillEventPerams.victim == GetLocalClientPlayer()){
+		AddPopEvent("", Rareity[2]) //Suicides
+	}
+	if(KillEventPerams.victim.IsTitan() && KillEventPerams.victimIsOwnedTitan){
+		if(!KillEventPerams.attacker.IsTitan()){
+			AddPopEvent( "Bunkerbuster", Rareity[3] ) //Titan kill as pilot
 		}
-		if(KillEventPerams.victim.IsTitan() && KillEventPerams.victimIsOwnedTitan){
-			AddPopEvent( "titan kill", Rareity[1] ) // Titan kill (duh)
-			if (KillEventPerams.damageSourceId == 185){
+	else
+		AddPopEvent( "titan kill", Rareity[1] ) // Titan kill (duh)
+		if (KillEventPerams.damageSourceId == 185){
 				AddPopEvent( "Scrapped", Rareity[2] ) //Titan execution
-			}
 		}
-		if(KillEventPerams.victim.IsPlayer() && !KillEventPerams.victimIsOwnedTitan){
-			Multikill++
-			
-			switch(Multikill){
-				case 1:
-
-					AddPopEvent("Pilot Kill", Rareity[1] ) // Pilot kills
+	}
+	//Here actual kill happens
+	if(KillEventPerams.victim.IsPlayer() && !KillEventPerams.victimIsOwnedTitan){ 
+		Multikill++
+		//Determine kills in quick succession
+		switch(Multikill){
+			case 1:
+				AddPopEvent("Pilot Kill", Rareity[1] ) // Pilot kills
 					break
-				case 2:
-					AddPopEvent( "double down", Rareity[1] ) // Double kill
+			case 2:
+				AddPopEvent( "double down", Rareity[1] ) // Double kill
 					break
-				case 3:
-					AddPopEvent( "triple threat", Rareity[2] ) // Triple kill
+			case 3:
+				AddPopEvent( "triple threat", Rareity[2] ) // Triple kill
 					break
-				case 4:
-					AddPopEvent( "quad kill", Rareity[2] ) // Quad kill
+			case 4:
+				AddPopEvent( "quad kill", Rareity[2] ) // Quad kill
 					break
-			}
-			 if (Multikill > 4){
-				AddPopEvent( "carnage ×" + Multikill, Rareity[3] ) // Multikills 
-			}
-			switch(StyleStreak){
-				case 3:
-					AddPopEvent( "killing spree", Rareity[1] ) //Killstreaks 3, 5 and 10
+			default:
+				AddPopEvent( "carnage ×" + Multikill, Rareity[3] )
 					break
-				case 5:
-					AddPopEvent( "rampage", Rareity[2] )	
+		}
+		if(KillEventPerams.victim.GetPlayerName() == nemesis){
+			AddPopEvent( "revenge", Rareity[2] ) //revenge kill
+			nemesis = ""
+		}
+		//Determine kills in one lifetime
+		switch(Killstreak){
+			case 5:
+				AddPopEvent( "killing spree", Rareity[1] )
 					break
-				case 10:
-					AddPopEvent( "unstoppable", Rareity[3] )				
+			case 10:
+				AddPopEvent( "rampage", Rareity[2] )	
 					break
-			}
-			if (mDistance >= 33.00 && KillEventPerams.damageSourceId != 107 && KillEventPerams.damageSourceId != 85){
-				AddPopEvent( "longshot " + format("%.2f", mDistance) + " m", Rareity[2] ) //longshots without nades, smokes etc
-			}
-			if (mDistance <= 3.00 && KillEventPerams.damageSourceId != 151 && KillEventPerams.damageSourceId != 140 && KillEventPerams.damageSourceId != 186 && KillEventPerams.damageSourceId != 185){
-				AddPopEvent( "point blank", Rareity[2] ) //point blank without melees etc
-			}
-			switch(KillEventPerams.damageSourceId){
-				case 110: case 75: case 237: case 40: case 57: case 81:
-					AddPopEvent( "crispy", Rareity[0] )	// Scorch stuff + Firestar
+			case 15:
+				AddPopEvent( "unstoppable", Rareity[3] )				
+					break
+		}
+		//Determine kills over a distance
+		if (mDistance >= 40.00 && KillEventPerams.damageSourceId != 110 && KillEventPerams.damageSourceId != 107 && KillEventPerams.damageSourceId != 85){
+			AddPopEvent( "longshot " + format("%.2f", mDistance) + " m", Rareity[2] ) //longshots without nades, smokes etc
+		}
+		//Determine kills under a distance
+		if (mDistance <= 3.00 && KillEventPerams.damageSourceId != 151 && KillEventPerams.damageSourceId != 140 && KillEventPerams.damageSourceId != 186 && KillEventPerams.damageSourceId != 185){
+			AddPopEvent( "point blank", Rareity[2] ) //point blank without melees etc
+		}
+		}
+		//Weapon-specific effects 
+		switch(KillEventPerams.damageSourceId){
+			case 75: case 76: case 77: case 81: case 82: case 83: case 84:
+				AddPopEvent( "core", Rareity[3] ) // Core kills 
+					break
+			case 110: case 237: case 40: case 57:
+				AddPopEvent( "crispy", Rareity[0] )	// Scorch stuff + Firestar
 					break										
-				case 126: case 135: case 119:				
-					AddPopEvent( "obliterated", Rareity[1] )	// Cold war, EPG, Charge rifle
+			case 126: case 135: case 119:				
+				AddPopEvent( "into pieces", Rareity[1] )	// Cold war, EPG
 					break
-				case 140:
-					AddPopEvent( "nosebreaker", Rareity[1] ) // Pilot melee
+			case 140:
+				AddPopEvent( "nosebreaker", Rareity[1] ) // Pilot melee
 					break
-				case 186:
-					AddPopEvent( "finisher", Rareity[2] ) //Pilot execution
+			case 186:
+				AddPopEvent( "finisher", Rareity[2] ) //Pilot execution
 					break
-				case 45:
-					AddPopEvent( "railed", Rareity[1] ) // Railgun
+			case 45:
+				AddPopEvent( "railed", Rareity[1] ) // Railgun
 					break
-				case 111:
-					AddPopEvent( "surgical", Rareity[2]) //Pulse blade
+			case 111:
+				AddPopEvent( "surgical", Rareity[2]) //Pulse blade
 					break
-				case 85:
-					AddPopEvent( "smoker", Rareity[1]) //Electric smoke nades
+			case 85: case 108: case 118: case 26: case 66: 
+				AddPopEvent( "shocker", Rareity[1]) //Electric 
 					break
-				case 107:
-					AddPopEvent( "fragger", Rareity[1]) //Grenades
+			case 107:
+				AddPopEvent( "fragger", Rareity[1]) //Grenades
 					break
-				case 151:
-					AddPopEvent( "by the sword", Rareity[1] ) //Ronin melee
+			case 151:
+				AddPopEvent( "by the sword", Rareity[1] ) //Ronin melee
 					break
-				case 44:
-					AddPopEvent( "nuke", Rareity[2] )//Nuclear eject
+			case 44:
+				AddPopEvent( "nuke", Rareity[2] )//Nuclear eject
 					break
+			case 103: case 97: case 130:
+				if(zoomFrac == 0.0){
+					AddPopEvent( "no scope", Rareity[2] ) //Noscopes with snipers
 				}
-			if(KillEventPerams.victim.IsTitan() && !player.IsTitan()){
-				AddPopEvent( "Bunkerbuster", Rareity[3] ) //Titan kill as pilot
-			}
-			if(!IsAlive(GetLocalClientPlayer())){
-				AddPopEvent( "postmortal", Rareity[3] ) //kills when player is dead
-				}
+					break
 		}
+		//Postmortal
+		if(!IsAlive(GetLocalClientPlayer())){
+			AddPopEvent( "postmortal", Rareity[3] )
+		}
+	}
 	}	
-}
+
 
 void function OnDamage(entity player, entity victim, vector Pos, int damageType){
 	
 	if(damageType & DF_KILLSHOT){
-
 		SlotStrings[0] = ("")
 		SlotStrings[1] = ("")
 		SlotStrings[2] = ("")
@@ -231,11 +257,7 @@ void function AddPopEvent( string name, vector rarity ){
 				SlotStrings[1] = ("")
 			}
 	}
-		SlotCols[0] = rarity
-		TimeSinceLast = Time()
-		StyleEventAlpha = 1.0
-
-	}
+}
 
   
 
@@ -295,7 +317,7 @@ void function UpdateRankUI(){
 		if(!IsLobby()){ // Reset on death
 			if(!IsAlive(GetLocalClientPlayer()))
 			{
-			StyleStreak = 0
+			Killstreak = 0
 			Multikill = 0
 			AiMultikill = 0
 			}
