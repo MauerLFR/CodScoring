@@ -73,7 +73,9 @@ void function KillEvent( ObituaryCallbackParams KillEventPerams ){
 	entity player = GetLocalClientPlayer()
 	zoomFrac = player.GetZoomFrac()
 	if(KillEventPerams.victim == GetLocalClientPlayer()){
-		nemesis = KillEventPerams.attacker.GetPlayerName()
+		if(KillEventPerams.attacker.IsPlayer()){
+			nemesis = KillEventPerams.attacker.GetPlayerName()
+		}
 		SlotStrings[0] = ("")	//
 		SlotStrings[1] = ("")	//
 		SlotStrings[2] = ("")	//
